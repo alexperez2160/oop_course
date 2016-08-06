@@ -30,18 +30,12 @@ class Board
     marker != INITIAL_MARKER
   end
 
-  def three_identical_markers(squares)
-    markers = squares.select(&:marked?).collect(&:marker)
-    return false if markers.size != 3
-    markers.min == markers.max
-  end 
-
   # returns winnings marker or nil
   def winning_marker
     WINNING_LINES.each do |line|
-      squares = @squares.value_at(*line)
+      squares = @squares.values_at(*line)
       if three_identical_markers?(squares)
-        returne squares.first.marker
+        return squares.first.marker
       end 
     end 
     nil 
@@ -53,17 +47,25 @@ class Board
   
   def draw
     puts "     |     |"
-    puts "#{@square[1]}    |#{@square[2]}    | #{@square[3]}"
+    puts "#{@squares[1]}    |#{@squares[2]}    | #{@squares[3]}"
     puts "     |     |"
     puts "-----+-----+-----"
     puts "     |     |"
-    puts " #{@square[4]}  | #{@square[5]}   | #{@square[6]}"
+    puts " #{@squares[4]}  | #{@squares[5]}   | #{@squares[6]}"
     puts "     |     |"
     puts "-----+-----+-----"
     puts "     |     |"
-    puts " #{@square[7]}  |#{@square[8]}    | #{@square[9]}"
+    puts " #{@squares[7]}  |#{@squares[8]}    | #{@squares[9]}"
     puts "     |     |" 
   end 
+
+  def three_identical_markers?(squares)
+    markers = squares.select(&:marked?).collect(&:marker)
+    return false if markers.size != 3
+    markers.min == markers.max
+  end 
+
+
 end
 
 class Square
@@ -80,6 +82,10 @@ class Square
   def unmarked?
     marker == INITIAL_MARKER
   end
+  
+  def marked?
+    marker != INITIAL_MARKER
+  end 
 end
 
 class Player
