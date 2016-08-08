@@ -1,5 +1,5 @@
 require 'pry'
-# represent the state of the board 
+# represent the state of the board
 class Board 
   WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
                 [[2, 5, 8], [1, 4, 7], [3, 6, 9]] + # cols
@@ -7,7 +7,7 @@ class Board
 
   def initialize
     @squares = {}
-    reset 
+    reset
   end
 
   def []=(num, marker)
@@ -17,15 +17,15 @@ class Board
   def unmarked_keys
     @squares.keys.select{ |key| @squares[key].unmarked?}
   end 
-  
+
   def full?
     unmarked_keys.empty?
-  end 
-  
+  end
+
   def someone_won?
     !!winning_marker
   end
-  
+
   def marked?
     marker != INITIAL_MARKER
   end
@@ -36,15 +36,15 @@ class Board
       squares = @squares.values_at(*line)
       if three_identical_markers?(squares)
         return squares.first.marker
-      end 
-    end 
-    nil 
+      end
+    end
+    nil
   end
-  
-  def reset 
-    (1..9).each {|key| @squares[key] = Square.new}
-  end 
-  
+
+  def reset
+    (1..9).each { |key| @squares[key] = Square.new}
+  end
+
   def draw
     puts "     |     |"
     puts "#{@squares[1]}    |#{@squares[2]}    | #{@squares[3]}"
@@ -57,13 +57,13 @@ class Board
     puts "     |     |"
     puts " #{@squares[7]}  |#{@squares[8]}    | #{@squares[9]}"
     puts "     |     |" 
-  end 
+  end
 
   def three_identical_markers?(squares)
     markers = squares.select(&:marked?).collect(&:marker)
     return false if markers.size != 3
     markers.min == markers.max
-  end 
+  end
 
 
 end
@@ -74,7 +74,7 @@ class Square
   def initialize(marker=INITIAL_MARKER)
     @marker = marker
   end
-  
+
   def to_s
     @marker
   end
@@ -82,14 +82,15 @@ class Square
   def unmarked?
     marker == INITIAL_MARKER
   end
-  
+
   def marked?
     marker != INITIAL_MARKER
-  end 
+  end
 end
 
 class Player
   attr_reader :marker
+
   def initialize(marker)
     @marker = marker
   end
@@ -101,8 +102,8 @@ class TTTGame
   FIRST_TO_MOVE = HUMAN_MARKER
   attr_reader :board, :human, :computer
 
-  def initialize 
-    @board = Board.new 
+  def initialize
+    @board = Board.new
     @human = Player.new(HUMAN_MARKER)
     @computer =  Player.new(COMPUTER_MARKER)
     @current_marker = FIRST_TO_MOVE
@@ -112,39 +113,40 @@ class TTTGame
     display_welcome_message
     clear
     loop do
-    display_board
+      display_board
 
       loop do
         human_moves
         break if board.someone_won? || board.full?
-        #break if someone_won? || board_full?
+        # break if someone_won? || board_full?
         computer_moves
         break if board.someone_won? || board.full?
-        #break if someone_won? || board_full?
+        # break if someone_won? || board_full?
         clear_screen_and_display_board
       end
 
-    display_results
-    break unless play_again?
-    reset
-    display_play_again_message
+      display_results
+      break unless play_again?
+      reset
+      display_play_again_message
     end
     display_goodbye_message
   end
 
-  private 
+  private
+
   def current_player_moves
     if human_turn?
       human_moves
       @current_marker = COMPUTER_MARKER
-    else 
+    else
       computer_moves
       @current_marker = HUMAN_MARKER
     end
   end
-  
-  def reset 
-    board.rest 
+
+  def reset
+    board.rest
     @current_marker = FIRST_TO_MOVE
     clear
   end
@@ -153,11 +155,11 @@ class TTTGame
     @current_marker == HUMAN_MARKER
   end
 
-  def clear 
+  def clear
     system 'clear'
   end
 
-  def human_moves 
+  def human_moves
     puts "Choose a square between #{board.unmarked_keys.join(', ')}:"
     square = nil
     loop do
@@ -205,6 +207,7 @@ class TTTGame
       puts "It's a tie."
     end
   end
+
   def play_again?
     answer = nil
     loop do
@@ -216,19 +219,11 @@ class TTTGame
     answer == 'y'
   end
 
-  def reset 
-    board.reset
-    clear 
-    puts "Let's play again!"
-    puts ""
-  end
-  
   def display_play_again_message
     puts "Let's play again!"
     puts ""
   end
 end
-
 
 game = TTTGame.new
 
